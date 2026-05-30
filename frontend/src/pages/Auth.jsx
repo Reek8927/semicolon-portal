@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-// 🚀 PRODUCTION FIX: Imported the native programmatic navigation hook
 import { useNavigate } from 'react-router-dom'; 
 
 function Auth() {
-    const navigate = useNavigate(); // Instantiated the navigation function matrix
+    const navigate = useNavigate(); 
     const [isLogin, setIsLogin] = useState(true);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -37,14 +36,16 @@ function Auth() {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user)); 
                 
+                // 🚀 TRIGGER GLOBAL APP UPDATE: Force App.jsx to read local storage instantly!
+                window.dispatchEvent(new Event("authChange"));
+                
                 setMessage(`Session verified! Diverting to authorized dashboard space...`);
                 
-                // 2. Evaluate role properties cleanly without causing window thread drops
                 setTimeout(() => {
                     if (data.user.role === 'admin') {
-                        navigate('/admin'); // 🚀 Clean SPA navigation routing redirect
+                        navigate('/admin'); 
                     } else {
-                        navigate('/dashboard'); // 🚀 Clean SPA navigation routing redirect
+                        navigate('/dashboard'); 
                     }
                 }, 1200);
 
@@ -66,13 +67,10 @@ function Auth() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[75vh] px-4 relative animate-fade-in">
-            {/* Ambient Background Light Glowing Vector Orbs */}
             <div className="absolute top-1/4 left-1/3 h-64 w-64 bg-cyan-500/10 rounded-full blur-[90px] pointer-events-none"></div>
             <div className="absolute bottom-1/4 right-1/3 h-64 w-64 bg-purple-500/10 rounded-full blur-[90px] pointer-events-none"></div>
 
-            {/* Pinterest-Style Frosted Glass Gateway Container Card */}
             <div className="bg-[#161b26]/60 backdrop-blur-md border border-white/5 p-8 rounded-3xl w-full max-w-md shadow-2xl relative z-10 space-y-6 transition-all duration-300 hover:border-white/10">
-                
                 <div className="text-center space-y-1">
                     <h2 className="text-3xl font-black text-white tracking-tight">
                         {isLogin ? '; Semicolon' : 'Create Profile'}
@@ -82,7 +80,6 @@ function Auth() {
                     </p>
                 </div>
 
-                {/* Status Update Information Ribbons */}
                 {message && (
                     <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs font-medium text-center shadow-inner">
                         {message}
@@ -94,7 +91,6 @@ function Auth() {
                     </div>
                 )}
 
-                {/* Interactive Dynamic Form Matrix */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {!isLogin && (
                         <div>
@@ -139,10 +135,10 @@ function Auth() {
                     </button>
                 </form>
 
-                {/* Subtext Footer Toggles */}
                 <div className="text-center text-xs text-slate-400 border-t border-white/5 pt-4">
                     {isLogin ? "New curriculum operator? " : "Profile entry established? "}
                     <button 
+                        type="button"
                         onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }} 
                         className="text-lime-400 font-bold hover:underline ml-0.5 tracking-wide bg-transparent border-none cursor-pointer"
                     >

@@ -8,10 +8,12 @@ import Leaderboard from './pages/Leaderboard.jsx';
 import Fees from './pages/Fees.jsx'; // 💳 Payment portal import
 
 function App() {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user')) || null;
-  
-  // Strict, centralized role and permission guard logic flags
+  // 🚀 LIVE STATE SYSTEM CONFIGURATION:
+  // We extract tokens and user profiles directly out of cache storage hooks
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+
+  // Centralized route permissions flags calculated on the active user state context
   const isTeacher = user && user.role === 'admin';
   const isApprovedStudent = user && user.role === 'student' && user.isApproved === true;
   const isPendingStudent = user && user.role === 'student' && !user.isApproved;
@@ -19,6 +21,22 @@ function App() {
   // Notification UI states
   const [notifications, setNotifications] = useState([]);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  // 🚀 ACTIVE SYNCHRONIZATION EVENT MATRIX:
+  // Flashes data re-evaluation flags immediately when Auth.jsx logs a student profile in
+  useEffect(() => {
+    const handleAuthStateShift = () => {
+      setToken(localStorage.getItem('token') || null);
+      setUser(JSON.parse(localStorage.getItem('user')) || null);
+    };
+
+    // Listen global-wide for the event flag dispatch token
+    window.addEventListener('authChange', handleAuthStateShift);
+    
+    return () => {
+      window.removeEventListener('authChange', handleAuthStateShift);
+    };
+  }, []);
 
   // Sync classroom notification feed automatically if student is approved and logged in
   useEffect(() => {
@@ -29,11 +47,14 @@ function App() {
       .then(res => res.ok ? res.json() : [])
       .then(data => setNotifications(data))
       .catch(err => console.error('Notification synchronization offline:', err));
-  }, [token, isTeacher, isPendingStudent]);
+  }, [token, isTeacher, isPendingStudent, user?.batchTag]);
 
   // Core execution: clear storage parameters and hard-refresh context views
   const handleLogout = () => {
     localStorage.clear();
+    // Re-initialize app state variables to null values natively
+    setToken(null);
+    setUser(null);
     window.location.href = '/';
   };
 
