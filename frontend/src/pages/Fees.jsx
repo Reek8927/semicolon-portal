@@ -8,7 +8,7 @@ function Fees() {
     const [message, setMessage] = useState('');
     const [uiError, setUiError] = useState('');
 
-    const tuitionAmount = 212; // Invoice Amount Rate Metric (INR)
+    const tuitionAmount = 1; // Invoice Amount Rate Metric (INR)
 
     const fetchPaymentHistory = () => {
         if (!user) return;
