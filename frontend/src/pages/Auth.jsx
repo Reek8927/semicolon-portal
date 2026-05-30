@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+// 🚀 PRODUCTION FIX: Imported the native programmatic navigation hook
+import { useNavigate } from 'react-router-dom'; 
 
 function Auth() {
+    const navigate = useNavigate(); // Instantiated the navigation function matrix
     const [isLogin, setIsLogin] = useState(true);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -32,16 +35,16 @@ function Auth() {
             if (isLogin) {
                 // 1. Commit token and profile object parameters to local cache storage
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user)); // This passes { id, name, email, role }
+                localStorage.setItem('user', JSON.stringify(data.user)); 
                 
                 setMessage(`Session verified! Diverting to authorized dashboard space...`);
                 
-                // 2. Evaluate role property values to perform precise conditional workspace split-routing
+                // 2. Evaluate role properties cleanly without causing window thread drops
                 setTimeout(() => {
                     if (data.user.role === 'admin') {
-                        window.location.href = '/admin';
+                        navigate('/admin'); // 🚀 Clean SPA navigation routing redirect
                     } else {
-                        window.location.href = '/dashboard';
+                        navigate('/dashboard'); // 🚀 Clean SPA navigation routing redirect
                     }
                 }, 1200);
 
